@@ -1,0 +1,211 @@
+####################################################################
+# Author: Gilbert Guyah
+# Purpose: FinalPoster Plots
+#          IST719 Information Visualization
+#
+##################################################################
+
+my.dir <-  "C:\\Users\\GilGuyah\\Desktop\\IST179 WIP\\"
+
+dfBMI <- read.csv(file=paste0(my.dir,"Overweight_and_Obesity_BMI.csv")
+                  ,header = TRUE
+                  ,stringsAsFactors = FALSE)
+
+head(dfBMI)
+
+summary(dfBMI)
+
+str(dfBMI)
+
+#dfBMI <- na.omit(dfBMI)
+
+#dfBMI$Sample_Size <- as.numeric(as.character(dfBMI$Sample_Size)) 
+
+#dfBMI<- select_all(dfBMI, tolower)
+
+str(dfBMI)
+
+head(dfBMI)
+
+View(dfage)
+
+#########################
+
+hist(df_BMI$Sample_Size)
+
+#######################
+
+
+dfage <- dfBMI[dfBMI$Break_Out_Category=="Age Group", ]
+
+dfrace <- dfBMI[dfBMI$Break_Out_Category=="Race/Ethnicity", ]
+
+dfeducation <- dfBMI[dfBMI$Break_Out_Category=="Education Attained" , ]
+
+dfgender <- dfBMI[dfBMI$Break_Out_Category=="Gender", ]
+
+dfyear <- dfBMI[dfBMI$Year== 2019, ]
+
+
+##################
+
+agedata<-  tapply(dfage$Data_value, list(dfage$Break_Out,dfage$Response), mean, na.rm=TRUE)
+barplot(t(agedata), main="BMI by Age", ylab="Data Confidence", beside=TRUE,  col = rainbow(4))
+legend("topright", title="BMI Range",
+       c("Normal", "Obese", "Overweight", "Underweight"), inset=.06, col = rainbow(4),fill=rainbow(4), ncol=2, cex=0.8, pch=19)
+
+###########
+
+
+
+
+###########
+par(oma=c(10,5,0,1))
+
+racebmi<-tapply(dfrace$Data_value, list(dfrace$Response,dfrace$Break_Out), mean, na.rm=TRUE)
+barplot(racebmi,beside = TRUE, las=2, main="BMI by Race", ylab=" ",col = rainbow(4))
+legend("topright", title="BMI Range",
+       c("Normal", "Obese", "Overweight", "Underweight"), inset=.00001, col = rainbow(4),fill=rainbow(4), ncol=2, cex=0.8, pch=19)
+
+
+##################
+
+
+agebmi<-tapply(dfage$Data_value, list(dfage$Response,dfage$Break_out), mean, na.rm=TRUE)
+barplot(agebmi,beside = TRUE, las=2,main="BMI by Age", ylab=" ", col = rainbow(4))
+legend("topleft", title="BMI Range",
+       c("Normal", "Obese", "Overweight", "Underweight"), inset=.06, col = rainbow(4),fill=rainbow(4), ncol=2, cex=0.8, pch=19)
+
+
+#################
+
+par(oma=c(3,3,0,1))
+edbmi<- tapply(dfeducation$Data_value, list(dfeducation$Response,dfeducation$Break_Out), mean,na.rm=TRUE)
+barplot(edbmi,beside = TRUE, las=2,main="BMI by Education", ylab=" ",  col = rainbow(4))
+legend("topright", title="BMI Range",
+       c("Normal", "Obese", "Overweight", "Underweight"), inset=.06, col = rainbow(4),fill=rainbow(4),ncol=2, cex=0.8, pch=19)
+
+
+
+#####################
+
+genderbmi <-tapply(dfgender$Data_value, list(dfgender$Response,dfgender$Break_Out), mean, na.rm=TRUE)
+boxplot(genderbmi,beside = TRUE, las=2)
+
+
+####################
+genderbmi <-tapply(dfgender$Data_value, list(dfgender$Response,dfgender$Break_Out), mean, na.rm=TRUE)
+barplot(genderbmi,beside = TRUE, las=2,main="BMI by Gender", ylab="", col = rainbow(4))
+legend("top", title="BMI Range",
+       c("Normal", "Obese", "Overweight", "Underweight"), col = rainbow(4),fill=rainbow(4), ncol=2, cex=0.8, pch=19)
+
+###################
+
+
+genderbmi <-tapply(dfgender$Data_value, list(dfgender$Response,dfgender$Break_Out), mean, na.rm=TRUE)
+boxplot(genderbmi,beside = TRUE, las=2)
+
+#################################
+
+library(lubridate) # work with dates
+library(dplyr)     # data manipulation (filter, summarize, mutate)
+library(ggplot2)   # graphics
+library(gridExtra) # tile several plots next to each other
+library(scales)
+
+
+
+summarise(dfBMI$Year, mean(dfBMI$Data_value))
+
+# set and line chart showing increase in obesity
+plot(dfage %>% group_by(Year) %>% dplyr::summarize(mean_confidence = mean(Data_value, na.rm = TRUE)), type="s")
+
+
+plot(dfage %>% group_by(Year) %>% dplyr::summarize(mean_confidence = mean(Data_value, na.rm = TRUE)), type="l")
+
+###################################################################################################################
+
+
+# US MAP_
+
+us <- map_data("state")
+dummyDF <- data.frame(state.name, stringsAsFactors=FALSE)
+dummyDF$state <- tolower(dummyDF$state.name)
+
+map.simple <- ggplot(dummyDF, aes(map_id = state))  
+map.simple <- map.simple+  geom_map(map = us, fill="white", color="black") 
+map.simple <- map.simple + expand_limits(x = us$long, y = us$lat)
+map.simple <- map.simple + coord_map() +  ggtitle("Obesity by States")
+map.simple
+
+
+my.dir <-  "C:\\Users\\GilGuyah\\Desktop\\IST179 WIP\\"
+
+dfstate <- read.csv(file=paste0(my.dir,"BMIstate.csv")
+                    ,header = TRUE
+                    ,stringsAsFactors = FALSE)
+
+str(dfstate)
+
+map.color <- ggplot(dfstate, aes(map_id=state))
+map.color1 <- map.color + geom_map(map = us, aes(fill="Value"))
+map.color2 <- map.color1 + expand_limits(x =us$long, y = us$lat)
+map.color3 <- map.color2 + coord_map() +  ggtitle("Obesity by States")
+map.color3
+
+hist(dfstate$value)
+
+barplot(dfstate$value, names.arg = dfstate$state, las=2)
+
+######################################################################################
+
+g <- ggplot(dfstate, aes(x=reorder(state, value), y=value, group=1))
+
+g <- g + geom_col()
+
+g <- g + theme(axis.text.x = element_text(angle=90, hjust=1))
+
+g
+
+
+######################################################
+
+# Retrieve the states map data and merge with BMI data
+states_map <- map_data("state")
+bmi_map <- left_join(states_map, dfstate, by = "region")
+
+# Create the map
+ggplot(bmi_map, aes(long, lat, group = group))+
+  geom_polygon(aes(fill = value), color = "white")+
+  scale_fill_viridis_c(option = "C")
+
+################################################################
+
+
+my.dir <-  "C:\\Users\\GilGuyah\\Desktop\\IST179 WIP\\"
+
+dfovertime <- read.csv(file=paste0(my.dir,"national obesity .csv")
+                       ,header = TRUE
+                       ,stringsAsFactors = FALSE)
+
+plot(dfovertime$YearStart, dfovertime$Data_Value, type="s", las=2)
+
+
+############################################################################
+
+my.dir <-  "C:\\Users\\GilGuyah\\Desktop\\IST179 WIP\\"
+
+dfgrades9_12 <- read.csv(file=paste0(my.dir,"GRADES9_12.csv")
+                       ,header = TRUE
+                       ,stringsAsFactors = FALSE)
+
+head(dfgrades9_12)
+str(dfgrades9_12)
+
+dfgrades<-tapply(dfgrades9_12$Data_Value, list(dfgrades9_12$HSGrade), mean, na.rm=TRUE)
+barplot(dfgrades,beside = TRUE, las=2)
+
+
+
+###############################################################
+
