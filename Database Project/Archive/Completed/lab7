@@ -1,0 +1,78 @@
+SELECT
+	vc_User.UserName,
+	vc_User.EmailAddress,
+	vc_VidCast.vc_VidCastID
+FROM vc_VidCast
+JOIN vc_User ON vc_User.vc_UserID = vc_VidCast.vc_VidCastID
+ORDER BY vc_User.UserName
+-- Look for users who have not yet made any VidCast
+SELECT * FROM vc_User
+WHERE vc_UserID NOT IN (SELECT vc_UserID FROM vc_VidCast)
+-- Be sure to include all the vc_Users records
+SELECT
+	vc_User.UserName,
+	vc_User.EmailAddress,
+	vc_VidCast.vc_VidCastID
+FROM vc_VidCast
+RIGHT JOIN vc_User ON vc_User.vc_UserID = vc_VidCast.vc_VidCastID
+ORDER BY vc_User.UserName
+--High-level decriptive statistics for vc_VidCast
+SELECT
+	COUNT(vc_VidCastID) as NumberofVidCasts,
+	SUM(ScheduleDurationMinutes) as TotalScheduledMinutes,
+	Min(ScheduleDurationMinutes) as MinScheduledMinutes,
+	Avg(ScheduleDurationMinutes) as AvgScheduledMinutes,
+	Max(ScheduleDurationMinutes) as MaxScheduledMinutes
+FROM vc_VidCast
+SELECT
+	vc_User.UserName,
+	vc_User.EmailAddress,
+	COUNT(vc_VidCast.vc_VidCastID) CountofVidCasts
+FROM vc_VidCast
+RIGHT JOIN vc_User ON vc_User.vc_UserID = vc_VidCast.vc_UserID
+GROUP BY
+	vc_User.UserName,
+	vc_User.EmailAddress
+ORDER BY CountofVidCasts DESC, vc_User.UserName
+--Our Least prolific users
+SELECT
+	vc_User.UserName,
+	vc_User.EmailAddress,
+	COUNT(vc_VidCast.vc_VidCastID) CountofVidCasts
+FROM vc_VidCast
+RIGHT JOIN vc_User ON vc_User.vc_UserID = vc_VidCast.vc_UserID
+GROUP BY
+	vc_User.UserName,
+	vc_User.EmailAddress
+HAVING COUNT(vc_VidCast.vc_VidCastID) < 10
+ORDER BY CountofVidCasts DESC, vc_User.UserName
+--Advance Summaries
+SELECT
+	vc_User.UserName,
+	vc_User.EmailAddress,
+	COUNT(DateDiff(n, StartDateTime, EndDateTime)) as SumActualDurationMinutes
+FROM vc_VidCast
+JOIN vc_User ON vc_User.vc_UserID = vc_VidCast.vc_UserID
+JOIN vc_Status On vc_Status.vc_StatusID = vc_VidCast.vc_StatusID
+WHERE vc_Status.StatusText = 'Finished'
+GROUP BY
+	vc_User.UserName,
+	vc_User.EmailAddress
+ORDER BY vc_User.UserName
+-- Appendix B Part 2
+SELECT
+	vc_User.UserName,
+	vc_User.EmailAddress,
+	SUM(DateDiff(n, StartDateTime, EndDateTime)) as SumActualDurationMinutes,
+	COUNT (vc_VidCast.vc_VidCastID) CountOfVidCasts,
+	Min(DateDiff(n, StartDateTime, EndDateTime)) as MinActualDurationMinutes,
+	Avg(DateDiff(n, StartDateTime, EndDateTime)) as AvgActualDurationMinutes,
+	Max(DateDiff(n, StartDateTime, EndDateTime)) as MaxActualDurationMinutes
+FROM vc_VidCast
+JOIN vc_User ON vc_User.vc_UserID = vc_VidCast.vc_UserID
+JOIN vc_Status On vc_Status.vc_StatusID = vc_VidCast.vc_StatusID
+WHERE vc_Status.StatusText = 'Finished'
+GROUP BY
+	vc_User.UserName,
+	vc_User.EmailAddress
+ORDER BY CountofVidCasts Desc,vc_User.UserName

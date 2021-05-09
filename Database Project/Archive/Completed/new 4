@@ -1,0 +1,7 @@
+SELECT
+	vc_User.UserName,
+	vc_User.EmailAddress,
+	vc_VidCast.vc_VidCastID
+FROM vc_VidCast
+JOIN vc_User ON vc_User.vc_UserID = vc_VidCast.vc_VidCastID
+ORDER BY vc_User.UserName

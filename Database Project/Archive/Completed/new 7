@@ -1,0 +1,17 @@
+SELECT
+	vc_User.UserName,
+	vc_User.EmailAddress,
+	COUNT(DateDiff(n, StartDateTime, EndDateTime)) as SumActualDurationMinutes
+	COUNT(vc_VidCastID) as NumberofVidCasts,
+	SUM(ScheduleDurationMinutes) as TotalScheduledMinutes,
+	Min(ScheduleDurationMinutes) as MinScheduledMinutes,
+	Avg(ScheduleDurationMinutes) as AvgScheduledMinutes,
+	Max(ScheduleDurationMinutes) as MaxScheduledMinutes
+FROM vc_VidCast
+JOIN vc_User ON vc_User.vc_UserID = vc_VidCast.vc_UserID
+JOIN vc_Status On vc_Status.vc_StatusID = vc_VidCast.vc_StatusID
+WHERE vc_Status.StatusText = 'Finished'
+GROUP BY
+	vc_User.UserName,
+	vc_User.EmailAddress
+ORDER BY vc_User.UserName

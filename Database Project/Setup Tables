@@ -1,0 +1,60 @@
+/*
+   User:  Gilbert Guyah
+   Server: .
+   Database: PERSONAL FINANACE
+   Application: SSMS 18
+*/
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'AccountNumber$') 
+BEGIN
+	DROP TABLE AccountNumber$
+END
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'DepositTable$') 
+BEGIN
+	DROP TABLE DepositTable$
+END
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MonthlyStatement$') 
+BEGIN
+	DROP TABLE MonthlyStatement$
+END
+
+CREATE TABLE AccountNumber
+	(
+	AccountNumberID		   int identity primary key,
+	AccountType		   varchar(30) NOT NULL unique,
+	AccountOwnerFirstName      varchar(30) NOT NULL,
+	AccountOwnerLasttName      varchar(30) NOT NULL,
+	AccountOwnerEmailAddress   varchar(30) NOT NULL
+	CONSTRAINT  PK_AccountNumber PRIMARY KEY AccountNumberID,
+	CONSTRAINT  U1_AccountNumber UNIQUE (AccountType)
+	   )
+
+CREATE TABLE DepositTable (
+	DepositID      int identity primary key,
+	DepositType    varchar(30) NULL unique,
+	DepositFrom    varchar(30) NULL,
+	DepositAmount  Money NULL,
+	DepositDate    Datetime  NULL,
+	CONSTRAINT  U1_DepositTable UNIQUE (DepositType),
+	CONSTRAINT  FK_DepositTable FOREIGN KEY AccountNumberID REFERENCES AccountNumber(AccountNumberID)
+	CONSTRAINT  PK_Deposit PRIMARY KEY DepositID
+)
+
+CREATE TABLE MonthlyStatement (
+	TransactionNumber       int identity primary key,
+	TransactionType         varchar(30) NULL unique,
+	TransactionDate		    int NULL,
+	TransactionPostedDate   datetime NULL,
+	TransactionMonth		varchar (30) NULL,
+	TransactionAmount		money NULL,
+	Payee					varchar(30) NULL unique,
+	PayeeCategory			varchar(30) NULL,
+	PayeeCity				Varchar(20) NULL,
+	PayeeState				varchar(10) NULL,
+	CONSTRAINT PK_MonthlyStatment PRIMARY KEY TransactionNumber,
+	CONSTRAINT U1_MonthlyStatementnthlyStatement UNIQUE (TransactionType, Payee),
+	CONSTRAINT FK_ MonthlyStatement FOREIGN KEY AccountNumberID  REFERENCES AccountNumber(AccountNumberID)
+)
+
+select * from INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE 'Finance_%'

@@ -1,0 +1,8 @@
+SELECT
+vc_User.UserName,
+vc_User.EmailAddress,
+vc_tag.TagText
+FROM vc_User
+JOIN vc_UserTaglist ON vc_User.vc_UserID = vc_UserTagList.vc_UserID 
+JOIN vc_Tag ON vc_UserTagList.vc_TagID = vc_Tag.vc_TagID
+ORDER by vc_User.UserName, vc_tag.TagText

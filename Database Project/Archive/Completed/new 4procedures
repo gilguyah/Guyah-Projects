@@ -1,0 +1,14 @@
+DELCARE @dayofmonth AS INT;
+SET @dayofmonth = day(getdate());
+IF (@dayofmonth > 15)
+BEGIN
+    PRINT 'Later in teh month';
+END
+BEGIN
+	PRINT 'Earlier in the month';
+END
+--- Create procedure to delete overtime timesheet
+CREATE PROCEDURE DeleteOvertime AS
+BEGIN
+DELETE Timesheet WHERE HoursWorked > 40
+END

@@ -1,0 +1,8 @@
+
+SET IDENTITY_INSERT [dbo].[MonthlyStatement] ON
+GO
+INSERT [dbo].[MonthlyStatement] ([TransactionNumber],	[TransactionType],	 [TransactionDate],	 [TransactionPostedDate],	[TransactionMonth],	 [TransactionAmount], [Payee],	[PayeeCategory], [PayeeCity], [PayeeState], [AccountNumberID])
+VALUES (	6011060719,	N 'ATM DB NONLOCAL', 	60719,	07-Jun-19,	N'JUNE',	$30.00,	N'PNC BANK2377 BRANDERMILL	ATM',	N'GAMBRILLS',	N'MD',	64475638)
+GO
+SET IDENTITY_INSERT [dbo].[MonthlyStatement] OFF
+

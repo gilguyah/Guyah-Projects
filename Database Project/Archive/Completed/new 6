@@ -1,0 +1,7 @@
+SELECT
+	vc_User.UserName,
+	vc_User.EmailAddress,
+	COUNT(vc_VidCast.vc_VidCastID) CountofVidCasts
+FROM vc_VidCast
+RIGHT JOIN vc_User ON vc_User.vc_UserID = vc_VidCast.vc_UserID
+ORDER BY vc_User.UserName

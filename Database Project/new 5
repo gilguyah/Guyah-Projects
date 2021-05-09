@@ -1,0 +1,6 @@
+CREATE PROCEDURE alter_then_update AS 
+BEGIN
+    ALTER TABLE vc_VidCast ADD bundle_type NVARCHAR(10);
+
+    EXEC sp_executesql 'UPDATE table_1 SET bundle_type = ''Small''';
+END;
